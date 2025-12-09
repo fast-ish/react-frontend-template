@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Template
+metadata:
+  name: react-frontend-template
+  title: React Frontend (Golden Path)
+  description: Production-ready Next.js frontend with Grafana Faro observability and enterprise patterns
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - react
+    - nextjs
+    - typescript
+    - frontend
+    - golden-path
+spec:
+  type: website
+  lifecycle: production
+  owner: platform

@@ -1,0 +1,314 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: react-frontend-template
+  title: React Frontend (Golden Path)
+  description: Production-ready Next.js frontend with Grafana Faro observability and enterprise patterns
+  tags:
+    - react
+    - nextjs
+    - typescript
+    - frontend
+    - golden-path
+spec:
+  owner: platform
+  type: website
+
+  parameters:
+    - title: Component Info
+      required:
+        - name
+        - owner
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique name of the component
+          pattern: '^[a-z][a-z0-9-]*$'
+          ui:autofocus: true
+        owner:
+          title: Owner Team
+          type: string
+          description: Team that owns this component
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: Group
+        description:
+          title: Description
+          type: string
+          description: Description of this component
+
+    - title: Runtime
+      properties:
+        nodeVersion:
+          title: Node Version
+          type: string
+          enum:
+            - "22"
+            - "20"
+          enumNames:
+            - "22 (Recommended)"
+            - "20 (LTS)"
+          default: "22"
+        nextVersion:
+          title: Next.js Version
+          type: string
+          enum:
+            - "15"
+            - "14"
+          enumNames:
+            - "15 (Latest)"
+            - "14 (LTS)"
+          default: "15"
+
+    - title: Styling & UI
+      properties:
+        styling:
+          title: Styling
+          type: string
+          enum:
+            - tailwind
+            - css-modules
+            - styled-components
+          enumNames:
+            - "Tailwind CSS (Recommended)"
+            - "CSS Modules"
+            - "Styled Components"
+          default: tailwind
+        uiLibrary:
+          title: UI Component Library
+          type: string
+          enum:
+            - shadcn
+            - radix
+            - none
+          enumNames:
+            - "shadcn/ui (Recommended)"
+            - "Radix Primitives"
+            - "None"
+          default: shadcn
+          description: Pre-built accessible UI components
+
+    - title: State & Data
+      properties:
+        stateManagement:
+          title: State Management
+          type: string
+          enum:
+            - zustand
+            - jotai
+            - redux
+            - none
+          enumNames:
+            - "Zustand (Recommended)"
+            - "Jotai"
+            - "Redux Toolkit"
+            - "None (React state only)"
+          default: zustand
+        dataFetching:
+          title: Data Fetching
+          type: string
+          enum:
+            - tanstack-query
+            - swr
+            - none
+          enumNames:
+            - "TanStack Query (Recommended)"
+            - "SWR"
+            - "None (fetch only)"
+          default: tanstack-query
+        formLibrary:
+          title: Form Library
+          type: string
+          enum:
+            - react-hook-form
+            - formik
+            - none
+          enumNames:
+            - "React Hook Form (Recommended)"
+            - "Formik"
+            - "None"
+          default: react-hook-form
+
+    - title: Authentication
+      properties:
+        authentication:
+          title: Authentication Provider
+          type: string
+          enum:
+            - cognito
+            - auth0
+            - nextauth
+            - none
+          enumNames:
+            - "AWS Cognito"
+            - "Auth0"
+            - "NextAuth.js"
+            - "None"
+          default: none
+          description: User authentication and session management
+
+    - title: Testing
+      properties:
+        testRunner:
+          title: Test Runner
+          type: string
+          enum:
+            - vitest
+            - jest
+          enumNames:
+            - "Vitest (Recommended)"
+            - "Jest"
+          default: vitest
+        e2eTesting:
+          title: E2E Testing
+          type: string
+          enum:
+            - playwright
+            - cypress
+            - none
+          enumNames:
+            - "Playwright (Recommended)"
+            - "Cypress"
+            - "None"
+          default: playwright
+
+    - title: Infrastructure
+      properties:
+        cdn:
+          title: CDN
+          type: string
+          enum:
+            - cloudfront
+            - none
+          enumNames:
+            - "CloudFront"
+            - "None"
+          default: none
+          description: CloudFront distribution for static assets
+        s3Assets:
+          title: S3 Asset Storage
+          type: boolean
+          default: false
+          description: S3 bucket for user uploads and static assets
+
+    - title: Features
+      properties:
+        analytics:
+          title: Product Analytics
+          type: string
+          enum:
+            - posthog
+            - mixpanel
+            - none
+          enumNames:
+            - "PostHog"
+            - "Mixpanel"
+            - "None"
+          default: none
+          description: Product analytics and feature tracking
+        featureFlags:
+          title: Feature Flags
+          type: string
+          enum:
+            - launchdarkly
+            - posthog
+            - none
+          enumNames:
+            - "LaunchDarkly"
+            - "PostHog"
+            - "None"
+          default: none
+          description: Feature flag management
+        i18n:
+          title: Internationalization
+          type: boolean
+          default: false
+          description: Multi-language support with next-intl
+        pwa:
+          title: Progressive Web App
+          type: boolean
+          default: false
+          description: PWA support with next-pwa
+
+    - title: AI Integration
+      properties:
+        aiClient:
+          title: AI Client
+          type: string
+          enum:
+            - vercel-ai
+            - none
+          enumNames:
+            - "Vercel AI SDK"
+            - "None"
+          default: none
+          description: AI/LLM integration for chat, completion, etc.
+
+    - title: Repository
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+
+  steps:
+    - id: fetch-skeleton
+      name: Fetch Skeleton
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          name: ${{ parameters.name }}
+          owner: ${{ parameters.owner }}
+          description: ${{ parameters.description }}
+          nodeVersion: ${{ parameters.nodeVersion }}
+          nextVersion: ${{ parameters.nextVersion }}
+          styling: ${{ parameters.styling }}
+          uiLibrary: ${{ parameters.uiLibrary }}
+          stateManagement: ${{ parameters.stateManagement }}
+          dataFetching: ${{ parameters.dataFetching }}
+          formLibrary: ${{ parameters.formLibrary }}
+          authentication: ${{ parameters.authentication }}
+          testRunner: ${{ parameters.testRunner }}
+          e2eTesting: ${{ parameters.e2eTesting }}
+          cdn: ${{ parameters.cdn }}
+          s3Assets: ${{ parameters.s3Assets }}
+          analytics: ${{ parameters.analytics }}
+          featureFlags: ${{ parameters.featureFlags }}
+          i18n: ${{ parameters.i18n }}
+          pwa: ${{ parameters.pwa }}
+          aiClient: ${{ parameters.aiClient }}
+
+    - id: publish
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        allowedHosts:
+          - github.com
+        repoUrl: ${{ parameters.repoUrl }}
+        description: ${{ parameters.description }}
+        defaultBranch: main
+        protectDefaultBranch: true
+        repoVisibility: private
+
+    - id: register
+      name: Register Component
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in Backstage
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
