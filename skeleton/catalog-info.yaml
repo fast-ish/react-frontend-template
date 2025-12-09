@@ -1,0 +1,27 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{values.name}}
+  description: ${{values.description}}
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    github.com/project-slug: ${{values.owner}}/${{values.name}}
+    grafana.com/dashboard-url: https://grafana.yourcompany.com/d/frontend
+  tags:
+    - react
+    - nextjs
+    - typescript
+    - frontend
+  links:
+    - url: https://${{values.name}}.yourcompany.com
+      title: Production
+      icon: dashboard
+spec:
+  type: website
+  lifecycle: production
+  owner: ${{values.owner}}
+  {%- if values.authentication != "none" or values.dataFetching != "none" %}
+  dependsOn:
+    # Add API dependencies here
+    # - component:default/api-service
+  {%- endif %}
