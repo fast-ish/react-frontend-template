@@ -1,0 +1,9 @@
+# Default owners
+* @${{values.owner}}
+
+# Frontend specific
+/src/components/ @${{values.owner}}
+/src/app/ @${{values.owner}}
+
+# CI/CD
+/.github/ @platform
