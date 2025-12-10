@@ -11,7 +11,7 @@ metadata:
     - frontend
     - golden-path
 spec:
-  owner: platform
+  owner: platform-team
   type: website
 
   parameters:
