@@ -1,0 +1,16 @@
+# =============================================================================
+# ARGO CI CONFIGURATION
+# =============================================================================
+language: node
+team: ${{values.owner | replace("group:", "") | replace("team-", "")}}
+
+config:
+  node-version: "${{values.nodeVersion}}"
+  package-manager: "npm"
+  skip-tests: false
+  deploy-enabled: true
+  rollout-strategy: canary
+
+  analysis:
+    success-rate-threshold: "0.99"
+    latency-p99-threshold: "200"
