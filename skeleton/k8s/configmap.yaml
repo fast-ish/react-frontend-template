@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${{values.name}}-config
+data:
+  # Add frontend configuration here
+  NEXT_PUBLIC_API_URL: "https://api.fasti.sh"

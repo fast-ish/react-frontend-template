@@ -297,6 +297,12 @@ spec:
         defaultBranch: main
         protectDefaultBranch: true
         repoVisibility: private
+        topics:
+          - react
+          - nextjs
+          - frontend
+          - argo-rollouts
+          - ${{ parameters.owner }}
 
     - id: register
       name: Register Component
@@ -305,6 +311,36 @@ spec:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: /catalog-info.yaml
 
+    - id: create-gitops-pr
+      name: Create GitOps Pull Request
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?owner=fast-ish&repo=aws-idp-gitops
+        branchName: add-app-${{ parameters.name }}
+        title: "feat(${{ parameters.name }}): add new react frontend"
+        description: |
+          ## New Application: ${{ parameters.name }}
+
+          This PR adds a new React/Next.js frontend to the GitOps repository.
+
+          ### Application Details
+          | Property | Value |
+          |----------|-------|
+          | **Name** | ${{ parameters.name }} |
+          | **Owner** | ${{ parameters.owner }} |
+          | **Type** | React Frontend (Next.js) |
+          | **Node** | ${{ parameters.nodeVersion }} |
+          | **Next.js** | ${{ parameters.nextVersion }} |
+
+          ### Deployment Strategy
+          - **Strategy**: Canary
+          - **Steps**: 20% → 50% → 80% → 100%
+
+          ---
+          *Created via Backstage React Frontend Template*
+        sourcePath: k8s
+        targetPath: teams/${{ parameters.owner | replace("group:", "") | replace("team-", "") }}/apps/${{ parameters.name }}
+
   output:
     links:
       - title: Repository
@@ -312,3 +348,9 @@ spec:
       - title: Open in Backstage
         icon: catalog
         entityRef: ${{ steps.register.output.entityRef }}
+      - title: GitOps Pull Request
+        icon: github
+        url: ${{ steps['create-gitops-pr'].output.remoteUrl }}
+      - title: ArgoCD Application
+        icon: cloud
+        url: https://argocd.fasti.sh/applications/${{ parameters.owner }}-${{ parameters.name }}
